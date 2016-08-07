@@ -1,0 +1,84 @@
+---
+title       : Should The Space Shuttle Launch?
+subtitle    : Risk of solid rocket booster o-ring failure based on ambient temperature.
+author      : Justin Elszasz
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : []            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## Decision: Should The Space Shuttle Launch?
+
+* In 1986, the Space Shuttle Challenger exploded on launch, killing the crew
+* Subsequent investigation showed that an o-ring seal on one of the solid rocket boosters failed
+  - Low amient temperatures during launch resulted in a lack of o-ring resilience, allowing hot combustion gases to "blow-by"
+* Data on 23 previous launches suggested o-rings were at risk of thermal degradation at cooler ambient temperatures
+  - Data were not available for temperatures below 53 degrees Fahrenheit
+  - Ambient temperature on the morning of Challenger launch was 36 degrees Fahrenheit
+
+---
+
+## Existing Data
+
+* "orings" - total number of o-rings, 
+* "at-risk" - number of o-rings at risk of thermal damage or blow-by
+* "temp" - ambient temperature (degrees Fahrenheit)
+* "leak_test_P" - pressure (pounds per square inch, or psi)
+* "test_no" - test (launch) number
+
+```{r echo=FALSE}
+data <- read.table("o-ring-erosion-or-blowby.data",
+                   col.names=c("orings","at_risk","temp","leak_test_P","test_no"))
+head(data, 5)
+```
+
+
+
+
+---
+
+## Linear Model
+```{r}
+training <- subset(data, !(temp > 70 & at_risk > 1)) # Remove clear outlier
+model <- lm(at_risk ~ temp, data=training)
+```
+
+```{r echo=FALSE, fig.height=5, fig.width=8}
+library(ggplot2)
+g <- ggplot(data, aes(temp, at_risk))
+g <- g + geom_vline(xintercept=36, color='blue')
+g <- g + geom_abline(intercept = model$coefficients[1], slope = model$coefficients[2], size = 0.5)
+g <- g + geom_point(aes(size=6, alpha=0.7))
+g <- g + theme(legend.position="none")
+g <- g + labs(x = "Ambient Temperature (degrees Fahrenheit) at Launch")
+g <- g + labs(y = "Number of O-rings At Risk of Thermal Damage")
+g <- g + annotate("text", x = 44, y = 0.5, label="Challenger Launch, 1986",color="blue")
+g <- g + annotate("text", x = 75, y = 1.9, label="Assumed Outlier")
+g <- g + annotate("text", x = 74, y = 0.4, label="Linear Model")
+g <- g + xlim(25,85)
+g <- g + ylim(0,3)
+return(g)
+```
+
+
+---
+
+## Application
+
+* User selects an expected ambient temperature for space shuttle launch
+* Linear regression model predicts number of o-rings at risk for thermal degradation
+  - Data are an integer count of number of o-rings at risk
+  - Model predicts fractional number of o-rings at risk
+* Prediction used as proxy to determine whether to launch
+  - If < 1, launch is safe
+  - If >= 1, launch is not safe
+  
+### Reference
+University of California - Irvine, Machine Learning Repository
+[Space Shuttle O-Ring Data Set](https://archive.ics.uci.edu/ml/datasets/Challenger+USA+Space+Shuttle+O-Ring)
+
+

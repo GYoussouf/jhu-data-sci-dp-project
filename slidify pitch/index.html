@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Should The Space Shuttle Launch?</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Should The Space Shuttle Launch?">
+  <meta name="author" content="Justin Elszasz">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Should The Space Shuttle Launch?</h1>
+    <h2>Risk of solid rocket booster o-ring failure based on ambient temperature.</h2>
+    <p>Justin Elszasz<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Decision: Should The Space Shuttle Launch?</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>In 1986, the Space Shuttle Challenger exploded on launch, killing the crew</li>
+<li>Subsequent investigation showed that an o-ring seal on one of the solid rocket boosters failed
+
+<ul>
+<li>Low amient temperatures during launch resulted in a lack of o-ring resilience, allowing hot combustion gases to &quot;blow-by&quot;</li>
+</ul></li>
+<li>Data on 23 previous launches suggested o-rings were at risk of thermal degradation at cooler ambient temperatures
+
+<ul>
+<li>Data were not available for temperatures below 53 degrees Fahrenheit</li>
+<li>Ambient temperature on the morning of Challenger launch was 36 degrees Fahrenheit</li>
+</ul></li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>Existing Data</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>&quot;orings&quot; - total number of o-rings, </li>
+<li>&quot;at-risk&quot; - number of o-rings at risk of thermal damage or blow-by</li>
+<li>&quot;temp&quot; - ambient temperature (degrees Fahrenheit)</li>
+<li>&quot;leak_test_P&quot; - pressure (pounds per square inch, or psi)</li>
+<li>&quot;test_no&quot; - test (launch) number</li>
+</ul>
+
+<pre><code>##   orings at_risk temp leak_test_P test_no
+## 1      6       0   66          50       1
+## 2      6       1   70          50       2
+## 3      6       0   69          50       3
+## 4      6       0   68          50       4
+## 5      6       0   67          50       5
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Linear Model</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">training &lt;- subset(data, !(temp &gt; 70 &amp; at_risk &gt; 1)) # Remove clear outlier
+model &lt;- lm(at_risk ~ temp, data=training)
+</code></pre>
+
+<p><img src="figure/unnamed-chunk-3-1.png" alt="plot of chunk unnamed-chunk-3"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Application</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>User selects an expected ambient temperature for space shuttle launch</li>
+<li>Linear regression model predicts number of o-rings at risk for thermal degradation
+
+<ul>
+<li>Data are an integer count of number of o-rings at risk</li>
+<li>Model predicts fractional number of o-rings at risk</li>
+</ul></li>
+<li>Prediction used as proxy to determine whether to launch
+
+<ul>
+<li>If &lt; 1, launch is safe</li>
+<li>If &gt;= 1, launch is not safe</li>
+</ul></li>
+</ul>
+
+<h3>Reference</h3>
+
+<p>University of California - Irvine, Machine Learning Repository
+<a href="https://archive.ics.uci.edu/ml/datasets/Challenger+USA+Space+Shuttle+O-Ring">Space Shuttle O-Ring Data Set</a></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Decision: Should The Space Shuttle Launch?'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Existing Data'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Linear Model'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Application'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
